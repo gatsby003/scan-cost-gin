@@ -111,7 +111,10 @@ func parseAccept(acceptHeader string) []string {
 	parts := strings.Split(acceptHeader, ",")
 	out := make([]string, 0, len(parts))
 	for _, part := range parts {
-		if i := strings.IndexByte(part, ';'); i > 0 {
+		// A leading ';' means the entry carries only parameters and no media
+		// type, so the parameter split must also apply at index 0. Using i > 0
+		// here left ";q=0.9" intact and reported it as a media type.
+		if i := strings.IndexByte(part, ';'); i >= 0 {
 			part = part[:i]
 		}
 		if part = strings.TrimSpace(part); part != "" {

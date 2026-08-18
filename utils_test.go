@@ -71,6 +71,13 @@ func TestParseAccept(t *testing.T) {
 	assert.Equal(t, "*/*", parts[3])
 }
 
+func TestParseAcceptSkipsParameterOnlyEntries(t *testing.T) {
+	parts := parseAccept("text/html,;q=0.9, ;level=1 ,application/xml")
+	assert.Len(t, parts, 2)
+	assert.Equal(t, "text/html", parts[0])
+	assert.Equal(t, "application/xml", parts[1])
+}
+
 func TestChooseData(t *testing.T) {
 	A := "a"
 	B := "b"
